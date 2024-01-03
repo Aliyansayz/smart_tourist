@@ -1,6 +1,6 @@
 from flask import Flask, render_template_string, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
-# from llm_response import * 
+from response import * 
 
 
 app = Flask(__name__)
@@ -86,7 +86,7 @@ def upload_page():
         if 'files' in request.files.getlist('files'):
             uploaded = False
             print("No files found")
-
+    return  render_template("upload.html")
 
 @app.route('/uploading', methods=['POST'])
 def uploading():
