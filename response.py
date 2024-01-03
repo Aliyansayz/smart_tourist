@@ -186,7 +186,7 @@ def create_docs_web(directory, unique_id, stop_idx= None):
       ext = filename.split(".")[-1]
       filepath = os.path.join(directory, filename)
 
-        if stop_idx:  
+      if stop_idx:  
             if index >= stop_idx : break  
 
       # Use PDFLoader for .pdf files
