@@ -6,15 +6,9 @@
             <!-- Add FontAwesome -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+            <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
             <script src="./static/script.js"></script>
-           
-            
             <style>
-
-                body {
-                    font-family: 'Roboto', sans-serif;
-                }
 
                 .container {
                     width: 100%;
@@ -145,11 +139,10 @@
   
                 }
             </style>
-          
-        
+            <link rel="stylesheet" href="./static/header.css">
 
         </head>
-        <body>
+        <body onload="loadlocationQuestions()"  >
             <script>
 
         // Define an object that maps each location to an array of questions
@@ -218,7 +211,29 @@
         }
     </script>
 
-         
+        <header>
+            <div>
+                <button>Button 1</button>
+                <button>Button 2</button>
+            </div>
+            <div>
+                <select id="location" onchange="loadlocationQuestions()">
+                    <option value="Makkah">Makkah</option>
+                    <option value="Mina">Mina</option>
+                    <option value="Arfat">Arafat</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="subheader">
+            <form method="post">
+            <button name="reset">Reset</button>
+            <button name="revert" >Undo</button>
+
+            </form>
+        </div>
+    
+
 
 
             <div class="container-main">
@@ -276,6 +291,8 @@
                         </div>
                 
                 </form>
+
+
                 <div>
                     <select id="language" name="language">
                     <option value="English">English</option>
@@ -290,27 +307,41 @@
         <div>
             <h4>FAQs</h4>
 
-            <label for="location">Select your location:</label>
+            <!-- <label for="location">Select your location:</label>
                 <select id="location" onchange="loadlocationQuestions()">
                     <option value="Makkah">Makkah</option>
                     <option value="Mina">Mina</option>
                     <option value="Arfat">Arfat</option>
                 </select>
                 <br><br>
-                <div id="locquestions"></div>
+                <div id="locquestions"></div> -->
 
 
-            <label for="food">Select your food preference:</label>
-                 <select id="food" onchange="loadQuestions()">
+            <!-- <label for="food">Select your food preference:</label> -->
+                 <!-- <select id="food" onchange="loadQuestions()">
                    <option value="NonGluten">Non Gluten</option>
                    <option value="EggFree">Egg Free</option>
                    <option value="NonDairy">Non Dairy</option>
                     </select>
                     <br><br>
                     
-                <div id="foodquestions"></div>
+                <div id="foodquestions"></div> -->
 
         </div> 
-    
+
+        <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Frequently Asked Prompts</th>
+                </tr>
+            </thead>
+            <tbody id="locquestions">
+                <!-- Location questions will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+
         </body>
     </html>
