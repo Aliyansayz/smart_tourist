@@ -1,0 +1,358 @@
+` ` """ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface with FAQs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #0a0a0a; /* Very dark green (close to black) */
+            color: #ffd700; /* Neon gold */
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header button {
+            background-color: #070707; /* Darker shade of very dark green */
+            color: #ffd700; /* Neon gold */
+            border: none;
+            padding: 8px 12px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+            color: #ffd700; /* Neon gold */
+            background-color: #070707; /* Darker shade of very dark green */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+        }
+        .chat {
+            overflow-y: auto;
+            max-height: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #0a0a0a; /* Very dark green (close to black) */
+            color: #ffd700; /* Neon gold */
+        }
+        #locquestions li {
+            color: #0a0a0a; /* Very dark green (close to black) */
+            background-color: #ffd700; /* Neon gold */
+            padding: 8px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body onload= "loadLocationQuestions()"  >
+
+    <header>
+        <div>
+            <button>Button 1</button>
+            <button>Button 2</button>
+        </div>
+        <div>
+            <select id="location" onchange="loadLocationQuestions()">
+                <option value="Makkah">Makkah</option>
+                <option value="Mina">Mina</option>
+                <option value="Arfat">Arafat</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="chat-container">
+        <div class="chat" id="chat">
+            <!-- Chat messages will be appended here -->
+        </div>
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Frequently Asked Prompts</th>
+            </tr>
+        </thead>
+        <tbody id="locquestions">
+            <!-- Location questions will be populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        const locationQuestions = {
+            Makkah: [
+                "What are the other must-visit places in Makkah?",
+                "Where can I perform Tawaf around the Kaaba?",
+                "What is the significance of the Kaaba"
+            ],
+            Mina: [
+                "How can I travel back to Makkah from Mina?",
+                "What is the purpose of staying in Mina during Hajj?",
+                "What facilities are available in Mina?",
+                "How can I travel back to Makkah from Mina?"
+            ],
+            Arfat: [
+                "Where can I stay in Arafat during Hajj?",
+                "What happens on the Day of Arafat, the most important day of Hajj?"
+            ],
+        };
+
+        function loadLocationQuestions() {
+            const location = document.getElementById("location").value;
+            let questions = "<ul>";
+            for (let question of locationQuestions[location]) {
+                questions += `<li onclick="copyTextLocation('${question}')">${question}</li>`;
+            }
+            questions += "</ul>";
+            document.getElementById("locquestions").innerHTML = questions;
+        }
+
+        function copyTextLocation(text) {
+            document.getElementById("message-input").value = text;
+        }
+
+        function sendMessage() {
+            var userInput = document.getElementById('message-input').value;
+            var chatContainer = document.getElementById('chat');
+            chatContainer.innerHTML += '<div>User: ' + userInput + '</div>';
+            document.getElementById('message-input').value = '';
+        }
+    </script>
+
+</body>
+</html>
+
+
+______________________________________
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface with FAQs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background-color: #0a0a0a; /* Very dark green (close to black) */
+            color: #ffd700; /* Neon gold */
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        header button {
+            background-color: #070707; /* Darker shade of very dark green */
+            color: #ffd700; /* Neon gold */
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+            color: #ffd700; /* Neon gold */
+            background-color: #070707; /* Darker shade of very dark green */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .subheader {
+            background-color: #070707; /* Darker shade of very dark green */
+            color: #ffd700; /* Neon gold */
+            padding: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .subheader button {
+            background-color: #070707; /* Darker shade of very dark green */
+            color: #ffd700; /* Neon gold */
+            border: none;
+            padding: 8px 12px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .chat-container {
+            display: flex;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+            flex-grow: 1;
+            flex-direction: column;
+        }
+        .chat {
+            overflow-y: auto;
+            max-height: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #0a0a0a; /* Very dark green (close to black) */
+            color: #ffd700; /* Neon gold */
+        }
+        #locquestions li {
+            color: #0a0a0a; /* Very dark green (close to black) */
+            background-color: #ffd700; /* Neon gold */
+            padding: 8px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        .sidebar {
+            width: 200px;
+            padding: 20px;
+            background-color: #070707; /* Darker shade of very dark green */
+            color: #ffd700; /* Neon gold */
+        }
+    </style>
+</head>
+<body  onload= "loadLocationQuestions()">
+
+    <header>
+        <div>
+            <button>Button 1</button>
+            <button>Button 2</button>
+        </div>
+        <div>
+            <select id="location" onchange="loadLocationQuestions()">
+                <option value="Makkah">Makkah</option>
+                <option value="Mina">Mina</option>
+                <option value="Arfat">Arafat</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="subheader">
+        <button onclick="reset()">Reset</button>
+        <button onclick="undo()">Undo</button>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat" id="chat">
+            <!-- Chat messages will be appended here -->
+        </div>
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <div class="sidebar">
+        <table>
+            <thead>
+                <tr>
+                    <th>Frequently Asked Prompts</th>
+                </tr>
+            </thead>
+            <tbody id="locquestions">
+                <!-- Location questions will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const locationQuestions = {
+            Makkah: [
+                "What are the other must-visit places in Makkah?",
+                "Where can I perform Tawaf around the Kaaba?",
+                "What is the significance of the Kaaba"
+            ],
+            Mina: [
+                "How can I travel back to Makkah from Mina?",
+                "What is the purpose of staying in Mina during Hajj?",
+                "What facilities are available in Mina?",
+                "How can I travel back to Makkah from Mina?"
+            ],
+            Arfat: [
+                "Where can I stay in Arafat during Hajj?",
+                "What happens on the Day of Arafat, the most important day of Hajj?"
+            ],
+        };
+
+        function loadLocationQuestions() {
+            const location = document.getElementById("location").value;
+            let questions = "<ul>";
+            for (let question of locationQuestions[location]) {
+                questions += `<li onclick="copyTextLocation('${question}')">${question}</li>`;
+            }
+            questions += "</ul>";
+            document.getElementById("locquestions").innerHTML = questions;
+        }
+
+        function copyTextLocation(text) {
+            document.getElementById("message-input").value = text;
+        }
+
+        function sendMessage() {
+            var userInput = document.getElementById('message-input').value;
+            var chatContainer = document.getElementById('chat');
+            chatContainer.innerHTML += '<div>User: ' + userInput + '</div>';
+            document.getElementById('message-input').value = '';
+        }
+
+        function reset() {
+            // Implement reset functionality here
+            console.log("Reset button clicked");
+        }
+
+        function undo() {
+            // Implement undo functionality here
+            console.log("Undo button clicked");
+        }
+    </script>
+
+</body>
+</html>
+""" `` 
