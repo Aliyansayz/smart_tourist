@@ -107,8 +107,8 @@ def uploading():
             return redirect(url_for('upload_page', messages=messages, uploaded=True))
 
 
-@app.route('/', methods=['GET', 'POST'])
-def home():
+@app.route('/doc-chat', methods=['GET', 'POST'])
+def doc_chat():
     global messages
     unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
 
@@ -133,29 +133,29 @@ def home():
 
         elif 'reset' in request.form:
             messages = []
-    return render_template('smart_tourist_llm.html', messages=messages)
+    return render_template('chat_document.html', messages=messages)
 
 
 
-@app.route('/ask_anything', methods=['GET', 'POST'])
-def home():
-    global messages
-    if request.method == 'POST':
+# @app.route('/ask_anything', methods=['GET', 'POST'])
+# def smart_tourist():
+#     global messages
+#     if request.method == 'POST':
 
-        if 'send'   in  request.form:
-            user_input = request.form.get('message')
-            resoponse = get_response(user_input)
-            # messages.append({'text': message, 'sender': 'user'}) 
-            messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
+#         if 'send'   in  request.form:
+#             user_input = request.form.get('message')
+#             resoponse = get_response(user_input)
+#             # messages.append({'text': message, 'sender': 'user'}) 
+#             messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
         
-        elif 'revert' in request.form:
-            try : messages = messages[:-1]
-            except: messages = []
+#         elif 'revert' in request.form:
+#             try : messages = messages[:-1]
+#             except: messages = []
             
-        elif 'reset'  in request.form:
-            messages = []
+#         elif 'reset'  in request.form:
+#             messages = []
 
-    return render_template('smart_tourist_llm.html', messages=messages)
+#     return render_template('smart_tourist_llm.html', messages=messages)
 
 
 
