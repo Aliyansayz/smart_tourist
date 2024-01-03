@@ -1,0 +1,6 @@
+flask
+langchain
+openai
+pinecone-client
+sentence_transformers
+tiktoken
