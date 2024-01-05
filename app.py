@@ -22,6 +22,21 @@ embeddings = create_embeddings_load_data()
 
 uploaded = False
 
+global messages, doc_messages 
+
+global messages_state 
+messages_state = { "ask_anything": {"messages":[] }, 
+                  "ask_document": {"messages":[]}  }
+
+questions_state = { "ask_anything": {"messages":[],
+                                     "messages":[],
+                                     "messages":[]
+                                      }, 
+                  "ask_document": {"messages":[],
+                                   "messages":[],
+                                   "messages":[]
+                                   }  }
+
 keywords = {
 
 "Safety contact Emergency Services Lost Items" : [ "What are the safety precautions I should take during Hajj?",
@@ -79,6 +94,8 @@ def suggestions():
 
 
 
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_page():
     global messages
@@ -107,9 +124,51 @@ def uploading():
             return redirect(url_for('upload_page', messages=messages, uploaded=True))
 
 
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    title = "Ask Anything"
+    description = "Hello there! I'm your SmarTourist guide. How can I assist you ?"
+    messages = messages_state["ask_anything"]["messages"]
+    title = "Ask Anything"
+    if request.method == 'POST':
+
+        if 'send'   in  request.form:
+            user_input = request.form.get('message')
+            # resoponse = get_response(user_input)
+            # messages.append({'text': message, 'sender': 'user'}) 
+            messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
+            messages_state["ask_anything"]["messages"] = messages
+        elif 'revert' in request.form:
+            messages = messages[:-1]
+            messages_state["ask_anything"]["messages"] = messages
+
+        elif 'reset'  in request.form:
+            messages = []
+            messages_state["ask_anything"]["messages"] = messages
+
+        elif 'ask_anything' in request.form:
+            title = "Ask Anything"
+            description = ""
+            messages = messages_state["ask_anything"]["messages"]
+            return redirect(url_for('home', messages=messages, description = description ))
+
+        elif 'ask_document' in request.form:
+            title = "Ask Doccument"
+            description = ""
+            doc_messages = messages_state["ask_document"]["messages"]
+            return redirect(url_for('doc_chat', messages=doc_messages, description = description ))
+
+    return render_template('smart_tourist_llm.html', messages=messages, title=title, description = description )
+
+
+
+
+
 @app.route('/doc-chat', methods=['GET', 'POST'])
 def doc_chat():
-    global messages
+    title = "Ask Doccument"
+    description = "Hello there! I'm your Haj guide. How can I help you ?"
+    doc_messages = messages_state["ask_document"]["messages"]
     unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
 
     if request.method == 'POST':
@@ -129,11 +188,29 @@ def doc_chat():
                 answer = get_answer(query, qa_chain, relevant_docs)
             message = request.form.get('message')
             # messages.append({'text': message, 'sender': 'user'}) 
-            messages.append({'text': f'Possible answer from document: {answer}' , 'sender': f"{message}" } )
-
+            doc_messages.append({'text': f'Possible answer from document: {answer}' , 'sender': f"{message}" } )
+            messages_state["ask_document"]["messages"] = doc_messages
         elif 'reset' in request.form:
-            messages = []
-    return render_template('chat_document.html', messages=messages)
+            doc_messages = []
+            messages_state["ask_document"]["messages"] = doc_messages
+
+        elif 'revert' in request.form:
+            doc_messages = doc_messages[:-1]
+            messages_state["ask_document"]["messages"] = doc_messages
+
+        elif 'ask_anything' in request.form:
+            title = "Ask Anything"
+            description = ""
+            messages = messages_state["ask_anything"]["messages"]
+            return redirect(url_for('home', messages=messages ))
+
+        elif 'ask_document' in request.form:
+            title = "Ask Anything"
+            description = ""
+            doc_messages = messages_state["ask_document"]["messages"]
+            return redirect(url_for('doc_chat', messages=doc_messages ))
+        
+    return render_template('smart_tourist_llm.html', messages=doc_messages, title=title, description = description )
 
 
 
@@ -162,26 +239,6 @@ def doc_chat():
 
 # Use a global list for simplicity. In a real application, you'd use a database.
 
-global messages
-messages = []
-
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    global messages
-    if request.method == 'POST':
-
-        if 'send'   in  request.form:
-            user_input = request.form.get('message')
-            # resoponse = get_response(user_input)
-            # messages.append({'text': message, 'sender': 'user'}) 
-            messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
-        elif 'revert' in request.form:
-            messages = messages[:-1]
-
-        elif 'reset'  in request.form:
-            messages = []
-
-    return render_template('smart_tourist_llm.html', messages=messages)
 
 
 
