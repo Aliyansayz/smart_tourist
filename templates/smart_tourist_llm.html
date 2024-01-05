@@ -213,8 +213,13 @@
 
         <header>
             <div>
-                <button>Button 1</button>
-                <button>Button 2</button>
+                <form action="/" method="POST" enctype="multipart/form-data">
+                        
+                <button type="submit" >Ask Anything</button>
+                </form>
+                <form action="/doc-chat" method="POST" enctype="multipart/form-data">
+                <button type="submit" >Ask Document</button>
+                </form>
             </div>
             <div>
                 <select id="location" onchange="loadlocationQuestions()">
@@ -229,13 +234,9 @@
             <form method="post">
             <button name="reset">Reset</button>
             <button name="revert" >Undo</button>
-
             </form>
         </div>
     
-
-
-
             <div class="container-main">
                 <div class="row">
                 <!-- Heading -->
