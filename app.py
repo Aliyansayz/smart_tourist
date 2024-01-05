@@ -28,17 +28,35 @@ global messages_state
 messages_state = { "ask_anything": {"messages":[] }, 
                   "ask_document": {"messages":[]}  }
 
-questions_state = { "ask_anything": {"messages":[],
-                                     "messages":[],
-                                     "messages":[]
-                                      }, 
-                  "ask_document": {"messages":[],
-                                   "messages":[],
-                                   "messages":[]
-                                   }  }
+questions_state = { "ask_anything_quest": 
+                    {"foodquest":["Enlist some egg non Gluten breakfast and deserts in Saudi Arabia ?",
+                                 "Enlist some egg free top dishes  in Saudi Arabia ?",
+                                 "What are top  non dairy products in Saudi Arabia ?"],
+                    "travelquest":[],
+                    "lawquest":[],
+                    "hajjquest":[], 
+                    "locationquest": {
+                        "Makkah": [
+                "What are the other must-visit places in Makkah ?",
+                "Where can I perform Tawaf around the Kaaba ?",
+                "What is the significance of the Kaaba"
+                                ],
+                        "Mina": [
+                            "How can I travel back to Makkah from Mina ?",
+                            "What is the purpose of staying in Mina during Hajj ?",
+                            "What facilities are available in Mina ?",
+                            "How can I travel back to Makkah from Mina ?"
+                                ],
+                        "Arfat": [
+                            "Where can I stay in Arafat during Hajj ?",
+                            "What happens on the Day of Arafat, the most important day of Hajj ?"
+                        
+                                ]
+                            }
+                        }
+                   }
 
 keywords = {
-
 "Safety contact Emergency Services Lost Items" : [ "What are the safety precautions I should take during Hajj?",
 "Who should I contact in case of emergencies?",
 "What emergency response services are available in Mecca and Medina?",
@@ -118,9 +136,9 @@ def uploading():
                 file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
     
             docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id, )
-            docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
+            docs_chunk = split_docs(docs, chunk_size=1000, chunk_overlap=0)
             embeddings = create_embeddings_load_data()
-            push_to_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name, embeddings, docs_chunk)
+            push_to_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name, embeddings, docs_chunk)
             return redirect(url_for('upload_page', messages=messages, uploaded=True))
 
 
@@ -212,34 +230,3 @@ def doc_chat():
         
     return render_template('smart_tourist_llm.html', messages=doc_messages, title=title, description = description )
 
-
-
-# @app.route('/ask_anything', methods=['GET', 'POST'])
-# def smart_tourist():
-#     global messages
-#     if request.method == 'POST':
-
-#         if 'send'   in  request.form:
-#             user_input = request.form.get('message')
-#             resoponse = get_response(user_input)
-#             # messages.append({'text': message, 'sender': 'user'}) 
-#             messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
-        
-#         elif 'revert' in request.form:
-#             try : messages = messages[:-1]
-#             except: messages = []
-            
-#         elif 'reset'  in request.form:
-#             messages = []
-
-#     return render_template('smart_tourist_llm.html', messages=messages)
-
-
-
-
-# Use a global list for simplicity. In a real application, you'd use a database.
-
-
-
-
-# 
