@@ -1,8 +1,10 @@
 from flask import Flask, render_template_string, render_template, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
 from response import * 
+from dotenv import load_dotenv
 
 
+load_dotenv()
 app = Flask(__name__)
 
 global  final_docs_list, uploaded, pinecone_environment, pinecone_index_name, pinecone_api_key, embeddings, unique_id
@@ -135,7 +137,7 @@ def uploading():
                 
                 file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
     
-            docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id, )
+            docs = create_docs_web(app.config['UPLOAD_FOLDER'] , unique_id, )
             docs_chunk = split_docs(docs, chunk_size=1000, chunk_overlap=0)
             embeddings = create_embeddings_load_data()
             push_to_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name, embeddings, docs_chunk)
@@ -147,7 +149,6 @@ def home():
     title = "Ask Anything"
     description = "Hello there! I'm your SmarTourist guide. How can I assist you ?"
     messages = messages_state["ask_anything"]["messages"]
-    title = "Ask Anything"
     if request.method == 'POST':
 
         if 'send'   in  request.form:
@@ -168,13 +169,13 @@ def home():
             title = "Ask Anything"
             description = ""
             messages = messages_state["ask_anything"]["messages"]
-            return redirect(url_for('home', messages=messages, description = description ))
+            return redirect(url_for('home', messages=messages, title=title, description = description ))
 
         elif 'ask_document' in request.form:
-            title = "Ask Doccument"
-            description = ""
+            title = "Ask Document"
+            description = "Hello there! I'm your Haj guide. How can I help you ?"
             doc_messages = messages_state["ask_document"]["messages"]
-            return redirect(url_for('doc_chat', messages=doc_messages, description = description ))
+            return redirect(url_for('doc_chat', messages=doc_messages, title=title, description = description ))
 
     return render_template('smart_tourist_llm.html', messages=messages, title=title, description = description )
 
@@ -184,8 +185,8 @@ def home():
 
 @app.route('/doc-chat', methods=['GET', 'POST'])
 def doc_chat():
-    title = "Ask Doccument"
-    description = "Hello there! I'm your Haj guide. How can I help you ?"
+    title = "Ask Document"
+    description  = "Hello there! I'm your Haj guide. How can I help you ?"
     doc_messages = messages_state["ask_document"]["messages"]
     unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
 
@@ -198,12 +199,13 @@ def doc_chat():
             #     docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id)
             #     docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
             #     final_doc_list = docs_chunk
-            if len(messages) == 0 : 
+            if len(doc_messages) == 0 : 
                 qa_chain = define_qa()
                 relevant_docs = get_relevant_docs(query, embeddings, unique_id)
             else :
                 relevant_docs = get_relevant_docs(query, embeddings, unique_id)
-                answer = get_answer(query, qa_chain, relevant_docs)
+            print(relevant_docs)
+            answer = get_answer(query, qa_chain, relevant_docs)
             message = request.form.get('message')
             # messages.append({'text': message, 'sender': 'user'}) 
             doc_messages.append({'text': f'Possible answer from document: {answer}' , 'sender': f"{message}" } )
@@ -220,13 +222,44 @@ def doc_chat():
             title = "Ask Anything"
             description = ""
             messages = messages_state["ask_anything"]["messages"]
-            return redirect(url_for('home', messages=messages ))
+            return redirect(url_for('home', messages=messages, title=title , description = description ))
 
         elif 'ask_document' in request.form:
-            title = "Ask Anything"
-            description = ""
+            title = "Ask Document"
+            description = "Hello there! I'm your Haj guide. How can I help you ?"
             doc_messages = messages_state["ask_document"]["messages"]
-            return redirect(url_for('doc_chat', messages=doc_messages ))
+            return redirect(url_for('doc_chat', messages=doc_messages, title=title , description = description ))
         
     return render_template('smart_tourist_llm.html', messages=doc_messages, title=title, description = description )
 
+
+
+# @app.route('/ask_anything', methods=['GET', 'POST'])
+# def smart_tourist():
+#     global messages
+#     if request.method == 'POST':
+
+#         if 'send'   in  request.form:
+#             user_input = request.form.get('message')
+#             resoponse = get_response(user_input)
+#             # messages.append({'text': message, 'sender': 'user'}) 
+#             messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
+        
+#         elif 'revert' in request.form:
+#             try : messages = messages[:-1]
+#             except: messages = []
+            
+#         elif 'reset'  in request.form:
+#             messages = []
+
+#     return render_template('smart_tourist_llm.html', messages=messages)
+
+
+
+
+# Use a global list for simplicity. In a real application, you'd use a database.
+
+
+
+
+# 
