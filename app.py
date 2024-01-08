@@ -182,7 +182,7 @@ def home():
 
         elif 'upload'  in request.form: 
             pass
-            return redirect(url_for('upload_page', messages=messages, title=title, description = description ))
+            return redirect(url_for('upload_page' ))
 
 
         elif 'ask_anything' in request.form:
@@ -234,6 +234,11 @@ def doc_chat():
         elif 'reset' in request.form:
             doc_messages = []
             messages_state["ask_document"]["messages"] = doc_messages
+
+        elif 'upload'  in request.form: 
+            pass
+            return redirect(url_for('upload_page'))
+
 
         elif 'revert' in request.form:
             doc_messages = doc_messages[:-1]
