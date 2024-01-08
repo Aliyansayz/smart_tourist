@@ -279,3 +279,14 @@ def metadata_filename( document ) :
         names.append(matches) 
 
    return names
+
+
+"""
+
+vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
+
+llm = ChatOpenAI()
+retriever = vectorstore.as_retriever()
+qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
+
+"""
