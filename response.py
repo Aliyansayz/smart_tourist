@@ -85,7 +85,7 @@ def define_qa():
     model_name = "gpt-3.5-turbo"
     # model_name = "gpt-4"
     llm = ChatOpenAI()
-    qa_chain =load_qa_chain(llm, chain_type="stuff")
+    qa_chain =load_qa_chain(llm, chain_type="map_reduce")
 
     return qa_chain 
 
@@ -94,9 +94,10 @@ def define_qa():
 def get_answer(query, qa_chain, relevant_docs ):
     
     # qa =  load_qa_chain(llm, chain_type="stuff")
-    
-    answer =  qa_chain.run(input_documents=relevant_docs, question=query)
-     
+    # answer =  qa_chain.run(input_documents=relevant_docs, question=query)
+    answer = qa_chain.invoke({'input_documents':relevant_docs, 'question':query})
+    # answer =  qa_chain.invoke(input=relevant_docs, question=query)
+    print(answer)
     
     return answer
 
