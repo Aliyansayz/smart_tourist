@@ -146,7 +146,8 @@ def similar_docs(query,k,pinecone_api_key,pinecone_environment,pinecone_index_na
 
     index = pull_from_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name,embeddings)
     print(pinecone_api_key,pinecone_environment, pinecone_index_name )
-    similar_docs = index.similarity_search_with_score(query, int(k),{"unique_id":unique_id})
+    # similar_docs = index.similarity_search_with_score(query, int(k),{"unique_id":unique_id}) 
+    similar_docs = index.similarity_search(query, int(k) ,{"unique_id":unique_id}  )
     #print(similar_docs)
     return similar_docs
 
