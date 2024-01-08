@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 global  final_docs_list, uploaded, pinecone_environment, pinecone_index_name, pinecone_api_key, embeddings, unique_id
 
-app.config['UPLOAD_FOLDER'] = "/documents" 
+app.config['UPLOAD_FOLDER'] = "documents" 
 
 uploaded = False
 openai.api_key = get_api(hexcode="736b2d56534975564878354d444669374b45733054704c5433426c626b464a6f4c316c7556506b696767546469465574496379")
@@ -17,7 +17,7 @@ unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
 
 pinecone_environment = "gcp-starter"
 pinecone_index_name  = "arabic-bot"
-pinecone_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
+pinecone_api_key     = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
 
 embeddings = create_embeddings_load_data()
 
@@ -123,25 +123,40 @@ def upload_page():
         if 'files' in request.files.getlist('files'):
             uploaded = False
             print("No files found")
+
+        if 'files' in request.files.getlist('files'):
+                files = request.files.getlist('files')
+                filenames = []
+                for file in files:
+                    print(file.filename)
+                    filename = file.filename
+                    file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
+                    return redirect(url_for('uploading'))
+                
     return  render_template("upload.html")
 
 @app.route('/uploading', methods=['POST'])
 def uploading():
     unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
-    if request.method == 'POST':
-       if 'files' in request.files.getlist('files'):
-            files = request.files.getlist('files')
-            filenames = []
-            for file in files:
-                print(file.filename)
-                
-                file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
+    docs = create_docs_web(app.config['UPLOAD_FOLDER'] , unique_id, )
+    docs_chunk = split_docs(docs, chunk_size=1000, chunk_overlap=0)
+    embeddings = create_embeddings_load_data()
+    push_to_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name, embeddings, docs_chunk)
+    return redirect(url_for('upload_page'))
+    # if request.method == 'POST':
+    #    if 'files' in request.files.getlist('files'):
+    #         files = request.files.getlist('files')
+    #         filenames = []
+    #         for file in files:
+    #             print(file.filename)
+    #             filename = file.filename
+    #             file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
     
-            docs = create_docs_web(app.config['UPLOAD_FOLDER'] , unique_id, )
-            docs_chunk = split_docs(docs, chunk_size=1000, chunk_overlap=0)
-            embeddings = create_embeddings_load_data()
-            push_to_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name, embeddings, docs_chunk)
-            return redirect(url_for('upload_page', messages=messages, uploaded=True))
+    #         docs = create_docs_web(app.config['UPLOAD_FOLDER'] , unique_id, )
+    #         docs_chunk = split_docs(docs, chunk_size=1000, chunk_overlap=0)
+    #         embeddings = create_embeddings_load_data()
+    #         push_to_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name, embeddings, docs_chunk)
+    #         return redirect(url_for('upload_page'))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -153,7 +168,7 @@ def home():
 
         if 'send'   in  request.form:
             user_input = request.form.get('message')
-            # resoponse = get_response(user_input)
+            resoponse = get_response(user_input)
             # messages.append({'text': message, 'sender': 'user'}) 
             messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
             messages_state["ask_anything"]["messages"] = messages
@@ -164,6 +179,11 @@ def home():
         elif 'reset'  in request.form:
             messages = []
             messages_state["ask_anything"]["messages"] = messages
+
+        elif 'upload'  in request.form: 
+            pass
+            return redirect(url_for('upload_page', messages=messages, title=title, description = description ))
+
 
         elif 'ask_anything' in request.form:
             title = "Ask Anything"
@@ -202,6 +222,7 @@ def doc_chat():
             if len(doc_messages) == 0 : 
                 qa_chain = define_qa()
                 relevant_docs = get_relevant_docs(query, embeddings, unique_id)
+                print(relevant_docs)
             else :
                 relevant_docs = get_relevant_docs(query, embeddings, unique_id)
             print(relevant_docs)
