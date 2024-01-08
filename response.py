@@ -1,24 +1,24 @@
 import os
 import openai
-import pinecone
-from langchain.vectorstores import Pinecone
-from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+from openai import OpenAI
 
+import pinecone
+from langchain_community.vectorstores import Pinecone
+from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.embeddings.openai import OpenAIEmbeddings
 
-from langchain.llms import OpenAI
+# from langchain.llms import OpenAI 
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-from langchain.document_loaders import PyPDFLoader
-from langchain.document_loaders import Docx2txtLoader
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import Docx2txtLoader
 from langchain.document_loaders import DirectoryLoader
 from langchain.chains.question_answering import load_qa_chain
 
 from langchain.schema import Document 
 import pandas as pd
 import requests
-from langchain.llms.openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
 import numpy as np
 import re
@@ -78,14 +78,16 @@ from langchain.chat_models import ChatOpenAI
 
 
 def define_qa(): 
-       
-    #  model_name = "text-davinci-003"
-     model_name = "gpt-3.5-turbo"
-     # model_name = "gpt-4"
-     llm = OpenAI(model_name=model_name)
-     qa_chain =load_qa_chain(llm, chain_type="stuff")
     
-     return qa_chain 
+    # from langchain.llms import OpenAI 
+    from langchain_community.chat_models import ChatOpenAI
+    #  model_name = "text-davinci-003"
+    model_name = "gpt-3.5-turbo"
+    # model_name = "gpt-4"
+    llm = ChatOpenAI()
+    qa_chain =load_qa_chain(llm, chain_type="stuff")
+
+    return qa_chain 
 
 
 
@@ -146,32 +148,11 @@ def similar_docs(query,k,pinecone_api_key,pinecone_environment,pinecone_index_na
 
     index = pull_from_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name,embeddings)
     print(pinecone_api_key,pinecone_environment, pinecone_index_name )
-    # similar_docs = index.similarity_search_with_score(query, int(k),{"unique_id":unique_id}) 
+    similar_docs = index.similarity_search_with_score(query, int(k),{"unique_id":unique_id})
     similar_docs = index.similarity_search(query, int(k) ,{"unique_id":unique_id}  )
     #print(similar_docs)
     return similar_docs
 
-
-def create_docs(user_file_list, unique_id):
-
-  docs = []
-  PDFReader = download_loader("PDFReader")
-
-  for filename in user_file_list:
-
-      filepath = filename
-      ext = filename.split(".")[-1]
-
-      # Use PDFLoader for .pdf files
-      if ext == "pdf":
-          loader = PDFReader()
-          doc = loader.load_data(file=Path(f'./{filename}'))
-          # loader = PyPDFLoader(filepath)
-      else:
-          continue
-      docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
-
-  return docs
 
 def create_docs_web(directory, unique_id, stop_idx= None):
   
@@ -235,10 +216,12 @@ def push_to_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name,e
     
 
 def get_response(user_input):
+
+    from openai import OpenAI
     client = OpenAI()
-    completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
+    completion   = client.chat.completions.create(
+        model    = "gpt-3.5-turbo",
+        messages = [
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": f"{user_input}"}
         ]
@@ -279,14 +262,3 @@ def metadata_filename( document ) :
         names.append(matches) 
 
    return names
-
-
-"""
-
-vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
-
-llm = ChatOpenAI()
-retriever = vectorstore.as_retriever()
-qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
-
-"""
