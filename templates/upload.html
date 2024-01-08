@@ -23,25 +23,75 @@
             margin-top: 10px;
         }
     </style>
+    <link rel="stylesheet" href="./static/header.css">
 </head>
 <body>
 
-<div class="container mt-5">
-    <h2 class="mb-4">File Upload</h2>
+    <!-- <h2 class="mb-4">File Upload</h2> -->
 
-    <div>
-        <form action="/uploading" method="POST" enctype="multipart/form-data">
-            <label class="custom-file-upload">
-                <input type="file" name="files" accept=".pdf" multiple />
-                Choose File
-            </label>
-            <input type="submit" id="upload-button" class="btn btn-primary btn-sm" value="Upload">
-        </form>
-    </div>
+    
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js" integrity="sha384-cdFPrX+mxKk8t7lD/B5i7z2H6YAxZkzmoDxCeYCB6Ii/lxfgCkvjrCI6yDf5+e/u" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy2nUWTAeUnNp6oBveL3SafVbIFC27FFb3" crossorigin="anonymous"></script>
+
+
+    <header>
+        <div>
+            <form method="post">        
+            <button name="ask_anything" >Ask Anything</button>
+            <button name="ask_document" >Ask Document</button>
+
+            </form>
+        </div>
+        <div>
+            <select id="location" onchange="loadlocationQuestions()">
+                <option value="Makkah">Makkah</option>
+                <option value="Mina">Mina</option>
+                <option value="Arfat">Arafat</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="subheader">
+        <form method="post">
+        <button name="upload">Upload</button>
+        <button name="reset" >Reset</button>
+        <button name="revert">Undo</button>
+        
+        </form>
+    </div>
+
+        <div class="container-main">
+            <div class="row">
+            <!-- Heading -->
+            <div class="col-12">
+                <h1 class="display-4">Smart Tourist Admin</h1>
+                <h4 class="display-5">Upload Your Files/h4>
+            </div>
+        </div>
+
+            <div class="container">
+                <div class="row">
+                   
+                    <!-- Chat Element -->
+                    <div class="col-12">
+                        <div>
+                            <form action="/uploading" method="POST" enctype="multipart/form-data">
+                                <label class="custom-file-upload">
+                                    <input type="file" name="files" accept=".pdf" multiple />
+                                    Choose File
+                                </label>
+                                <input type="submit" id="upload-button" class="btn btn-primary btn-sm" value="Upload">
+                            </form>
+                        </div>
+
+                    </div>
+            
+        
+                </div>
+            </div>
+
 
 </body>
 </html>
