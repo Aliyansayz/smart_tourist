@@ -56,16 +56,11 @@ import re
 def get_relevant_docs(query, embeddings, unique_id, final_doc_list = None ):
   
   document_count = 3
+  pinecone_environment = "gcp-starter"
+  pinecone_index_name  = "arabic-bot"
+  pinecone_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
   
-  if final_doc_list:
-      try:
-              push_to_pinecone(pinecoy_api_key, pinecone_environment, pinecone_index_name, embeddings,  final_docs_list) 
-              relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings, unique_id )
-      except:
-              relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings, unique_id )
- 
-  else :
-      relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings, unique_id )
+  relevant_docs = similar_docs(query, document_count ,pinecone_api_key, pinecone_environment, pinecone_index_name, embeddings, unique_id )
   
   return  relevant_docs
    
@@ -98,8 +93,8 @@ def get_answer(query, qa_chain, relevant_docs ):
     
     # qa =  load_qa_chain(llm, chain_type="stuff")
     
-    answer =  qa_chain.run(input_documents=relevant_docs,
-     question=query)
+    answer =  qa_chain.run(input_documents=relevant_docs, question=query)
+     
     
     return answer
 
@@ -140,16 +135,17 @@ def split_docs(documents, chunk_size=1000, chunk_overlap=0):
 
 # QUERY MATCH --> SIMILAR SEARCH --> RELEVANT DOCS --> RELEVANT DOCS INTO SUMMARY 
 
-def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings,unique_id):
+def similar_docs(query,k,pinecone_api_key,pinecone_environment,pinecone_index_name,embeddings,unique_id):
 
     pinecone.init(
-    api_key=pinecone_apikey,
+    api_key=pinecone_api_key,
     environment=pinecone_environment
     )
 
     index_name = pinecone_index_name
 
-    index = pull_from_pinecone(pinecone_apikey,pinecone_environment,index_name,embeddings)
+    index = pull_from_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name,embeddings)
+    print(pinecone_api_key,pinecone_environment, pinecone_index_name )
     similar_docs = index.similarity_search_with_score(query, int(k),{"unique_id":unique_id})
     #print(similar_docs)
     return similar_docs
@@ -227,10 +223,10 @@ def create_embeddings_load_data():
 
 
 #Function to push data to Vector Store - Pinecone here
-def push_to_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings,docs):
+def push_to_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name,embeddings,docs):
 
     pinecone.init(
-    api_key=pinecone_apikey,
+    api_key=pinecone_api_key,
     environment=pinecone_environment
     )
     print("done......2")
