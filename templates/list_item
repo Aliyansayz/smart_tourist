@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    ul, ul ul {
+      list-style-type: none;
+    }
+  </style>
+</head>
+<body>
+
+<h1>A list in a list in a list</h1>
+
+<ul>
+  <li>Coffee</li>
+  <li>Tea
+    <ul>
+      <li>Black tea</li>
+      <li>Green tea
+        <ul>
+          <li>China</li>
+          <li>Africa</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Milk</li>
+</ul>
+
+</body>
+</html>
