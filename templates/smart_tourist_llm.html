@@ -167,10 +167,10 @@
 
         function loadlocationQuestions() {
             const location = document.getElementById("location").value;
-            let questions = "<ul <style> ul, ul ul { list-style-type: none; } </style>  >";
+            let questions = "<ul>";
             // Loop through the questions array for the selected location and create a list item for each question
             for (let question of locationQuestions[location]) {
-                questions += `<li onclick="copytextLocation('${question}')">${question}</li>`;
+                questions += `<li style ="list-style-type: none;" onclick="copytextLocation('${question}')">${question}</li>`;
             }
             questions += "</ul>";
             document.getElementById("locquestions").innerHTML = questions;
