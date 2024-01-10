@@ -14,39 +14,8 @@
             border-radius: 8px;
             margin-bottom: 10px;
         }
-
-        .user-message {
-            background-color: #4CAF50; /* Bright Green */
-            color: white;
-        }
-
-        .other-message {
-            background-color: #333; /* Dark Grey */
-            color: white;
-        }
-
-        /* Custom Styles for To-Do List */
-        .to-do-list {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .to-do-item {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        /* Gradient Background */
-        body {
-            background: linear-gradient(to right, #b4a284, #d6c9a4); /* Hazel-style gradient */
-            height: 100vh; /* Full height of the viewport */
-            margin: 0; /* Remove default margin */
-        }
-    </style>
-    
-    <style>
-
-
+        
+        
                 .chat-element {
                     height: 200px;
                     overflow-y: auto;
@@ -54,6 +23,7 @@
                     display: flex;
                     flex-direction: column;
                 }
+                
 
                 .message-box {
                     border-radius: 10px;
@@ -102,7 +72,35 @@
                         display: flex;
                         } 
                 }
-            </style>
+
+        .user-message {
+            background-color: #4CAF50; /* Bright Green */
+            color: white;
+        }
+
+        .other-message {
+            background-color: #333; /* Dark Grey */
+            color: white;
+        }
+
+        /* Custom Styles for To-Do List */
+        .to-do-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .to-do-item {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Gradient Background */
+        body {
+            background: linear-gradient(to right, #b4a284, #d6c9a4); /* Hazel-style gradient */
+            height: 100vh; /* Full height of the viewport */
+            margin: 0; /* Remove default margin */
+        }
+    </style>
     
     
 </head>
@@ -139,9 +137,10 @@
                 John Doe
                 <!-- Other header content like settings, etc. can be added here -->
             </div>
-
+            
+            <div class="col-12">
             <!-- Chat Content -->
-            <div id='chat-content' style='height: 400px; overflow-y: scroll;'>
+            <div class="chat-element" style="height: 500px; overflow-y: auto;">
                 <!-- Sample Messages -->
                 <!--{% for message in messages %}-->
                 <div class="message-box sender" style="text-align: right;">
