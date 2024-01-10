@@ -6,6 +6,7 @@
     <title>Chat Interface</title>
     <!-- Bootstrap CDN links -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
         /* Custom Styles for Chat Boxes */
         .chat-box {
@@ -42,6 +43,68 @@
             margin: 0; /* Remove default margin */
         }
     </style>
+    
+    <style>
+
+
+                .chat-element {
+                    height: 200px;
+                    overflow-y: auto;
+                    padding: 10px;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .message-box {
+                    border-radius: 10px;
+                    margin-bottom: 10px;
+                    padding: 10px;
+                    color: white;
+                    word-wrap: break-word; /* This will prevent long text from overflowing */
+                    display: inline-block; /* This will make the width of the box adjust to the text */
+                }
+
+                .sender {
+                    background-color: #008000; /* Emerald Green */
+                    align-self: flex-end; /* This will align the sender's messages to the right */
+                }
+
+                .bot {
+                    background-color: #808080; /* Gray */
+                    align-self: flex-start; /* This will align the bot's responses to the left */
+                }
+
+                
+                .message {
+                    margin: 10px;
+                    padding: 10px;
+                }
+
+
+                .user {
+                    background-color: #d0f0d0;
+                }
+                .guide {
+                    background-color: #d0d0f0;
+                }
+                .scrollable {
+                    height: 300px;
+                    overflow-y: auto;
+                 #send-button, #speak-button {
+                        border: 5px;
+                        font: inherit;
+                        background-color: transparent;
+                        margin: 2px;
+                        appearance: none;
+                        padding: 10px 12px 3px 3px ;
+                        cursor: pointer;
+                        font-size: 24px;
+                        display: flex;
+                        } 
+                }
+            </style>
+    
+    
 </head>
 <body>
 
@@ -80,19 +143,29 @@
             <!-- Chat Content -->
             <div id='chat-content' style='height: 400px; overflow-y: scroll;'>
                 <!-- Sample Messages -->
-                <div class="chat-box user-message">
-                    <strong>You:</strong> Hi, how are you?
-                </div>
-                <div class="chat-box other-message">
-                    <strong>John Doe:</strong> I'm good, thanks! How about you?
-                </div>
+                <!--{% for message in messages %}-->
+                <div class="message-box sender" style="text-align: right;">
+                        <div class="me">Hi, how are you? </div>
+                    </div>
+                    <div class="message-box bot" style="text-align: left;">
+                        <div class="message-line">I'm good, thanks! How about you? </div>
+                    </div>
+                  <!--{% endfor %} -->
+            </div>
+                
+                    
                 <!-- More messages can be added dynamically using JS -->
             </div>
-
-            <!-- Message Input Field -->
+          	
+            <!-- Message Input Field --> 
             <div class="input-group mt-3">
                 <input type='text' id='message-input' placeholder='Type your message...' class='form-control'/>
-                <button class="btn btn-primary" id="send-btn">Send</button>
+                
+                <button  name="send" id="send-button" class="btn btn-primary send">
+                            <i class='fa fa-paper-plane'></i>
+                        </button>
+                    <button type="button" onclick="record()" id="speak-button"  class="btn btn-primary send"><i class="fa fa-microphone"></i></button>
+                
             </div>
         </div>
     </div>
