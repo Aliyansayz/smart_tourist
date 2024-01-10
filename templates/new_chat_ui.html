@@ -96,28 +96,139 @@
 
         /* Gradient Background */
         body {
-            background: linear-gradient(to right, #b4a284, #d6c9a4); /* Hazel-style gradient */
+            background: linear-gradient(to right,  #DAFF7D, #B2EE9B); /* Hazel-style gradient */
             height: 100vh; /* Full height of the viewport */
             margin: 0; /* Remove default margin */
         }
+        
+        table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        }
+        th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        }
+        th {
+        background-color: #0a0a0a; /* Very dark green (close to black) */
+        color: #ffd700; /* Neon gold */
+    		}
+        #locquestions li {
+        color: #0a0a0a; /* Very dark green (close to black) */
+        background-color: #ffd700; /* Neon gold */
+        padding: 8px;
+        margin: 5px 0;
+        cursor: pointer;
+    	}
+        
+        .title {
+        background: none;
+        color: linear-gradient(to right, #006847, #FFFFFF);
+        padding: 10px; /* Add padding for better readability */
+        font-size: 24px; /* Adjust font size as needed */
+        font-weight: bold; /* Optionally set font weight */
+        text-align: center; /* Align text to the center */
+      }
+
     </style>
     
     
 </head>
-<body>
+<body onload="loadlocationQuestions()"  >
+<script>
+
+        // Define an object that maps each location to an array of questions
+        const locationQuestions = {
+            Makkah: [
+                "What are the other must-visit places in Makkah ?",
+                "Where can I perform Tawaf around the Kaaba ?",
+                "What is the significance of the Kaaba"
+            ],
+            Mina: [
+                "How can I travel back to Makkah from Mina ?",
+                "What is the purpose of staying in Mina during Hajj ?",
+                "What facilities are available in Mina ?",
+                "How can I travel back to Makkah from Mina ?"
+            ],
+            Arfat: [
+                "Where can I stay in Arafat during Hajj ?",
+                "What happens on the Day of Arafat, the most important day of Hajj ?"
+            
+            ],
+        };
+
+        function loadlocationQuestions() {
+            const location = document.getElementById("location").value;
+            let questions = "<ul>";
+            // Loop through the questions array for the selected location and create a list item for each question
+            for (let question of locationQuestions[location]) {
+                questions += `<li style ="list-style-type: none;" onclick="copytextLocation('${question}')">${question}</li>`;
+            }
+            questions += "</ul>";
+            document.getElementById("locquestions").innerHTML = questions;
+        }
+
+        function copytextLocation(text) {
+            document.getElementById("message-input").value = text;
+        }
+
+        //______________________________________________
+
+        // Define an object that maps each food preference to an array of questions
+        const foodQuestions = {
+            NonGluten: [
+                "Enlist some egg non Gluten breakfast and deserts in Saudi Arabia ?"
+            ],
+            EggFree: [
+                "Enlist some egg free top dishes  in Saudi Arabia ?"
+            ],
+            NonDairy: [
+                "What are top  non dairy products in Saudi Arabia ?"
+            ],
+        };
+
+        function loadQuestions() {
+            const food = document.getElementById("food").value;
+            let questions = "<ul <style> ul, ul ul { list-style-type: none; } </style>  >";
+            // Loop through the questions array for the selected food and create a list item for each question
+            for (let question of foodQuestions[food]) {
+                questions += `<li 
+                           onclick="copyText('${question}')">${question}</li>`;
+            }
+            questions += "</ul>";
+            document.getElementById("foodquestions").innerHTML = questions;
+        }
+
+        function copyText(text) {
+            document.getElementById("message-input").value = text;
+        }
+    </script>
 
 <div class="container mt-5">
     <div class="row">
         <!-- Left Panel -->
         <div class="col-md-4 border-end">
             <!-- To-Do List -->
-            <h5 class="mt-3"> Frequently Asked Prompts </h5>
-            <ul class="list-group to-do-list">
-                <li class="list-group-item to-do-item">Task 1: Complete project proposal</li>
-                <li class="list-group-item to-do-item">Task 2: Prepare for client meeting</li>
-                <li class="list-group-item to-do-item">Task 3: Review code changes</li>
+           
+            
+            <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Frequently Asked Prompts</th>
+                </tr>
+            </thead>
+            <tbody id="locquestions">
+                <!-- Location questions will be populated here -->
+            </tbody>
+        </table>
+    </div>
+             
+             
+            
                 <!-- Add more to-do items as needed -->
-            </ul>
 
             <!-- Filter and other options can be added here -->
             <h5 class="mt-3">Conversations</h5>
@@ -128,13 +239,18 @@
                 <li class="list-group-item">Bob Johnson</li>
                 <!-- More items -->
             </ul>
+             <select id="location" onchange="loadlocationQuestions()">
+                    <option value="Makkah">Makkah</option>
+                    <option value="Mina">Mina</option>
+                    <option value="Arfat">Arafat</option>
+                </select>
         </div>
 
         <!-- Right Panel -->
         <div class="col-md-8">
             <!-- Chat Header -->
             <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
-                John Doe
+                <h2 class="title" >SmarTourist</h2>
                 <!-- Other header content like settings, etc. can be added here -->
             </div>
             
