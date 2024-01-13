@@ -16,16 +16,18 @@
     <style>
 
         header {
-            background-color: #0474ea; /* Very dark green (close to black) */
-            color: #008000 ; /* Neon gold */
+            background-color: #fffdd0; /* Very dark green (close to black) */
+            
             padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         header button {
-            background-color: #74bcf4 ;  /* Darker shade of very dark green */
-            color: #ffffff ; /* Neon gold */
+            background-color: #abf7b1 ;  /* Darker shade of very dark green */
+            color: #008000; ; /* Neon gold */
+            text-decoration: solid;
+            font-size: 16px;
             border: none;
             padding: 8px 12px;
             margin-right: 10px;
@@ -33,14 +35,14 @@
         }
 
         .subheader {
-            background-color: #191970 ; /* Darker shade of very dark green */
+            background-color: #28282B ; /* Darker shade of very dark green */
             color: #ffd700; /* Neon gold */
             padding: 10px;
             display: flex;
             justify-content: flex-end;
         }
         .subheader button {
-            background-color: #191970; /* Darker shade of very dark green */
+            background-color: #28282B; /* Darker shade of very dark green */
             color: #ffffff ; /* Neon gold */
             border: none;
             padding: 8px 12px;
@@ -52,8 +54,8 @@
           padding: 10px;
           font-size: 16px;
           margin-right: 10px;
-          color: #ffd700; /* Neon gold */
-          background-color: #070707; /* Darker shade of very dark green */
+          color: #ffffff; /* Neon gold */
+          background-color: #28282B; /* Darker shade of very dark green */
           border: none;
           border-radius: 5px;
           cursor: pointer;
@@ -350,15 +352,18 @@
             </div>
 
             <!-- Message Input Field --> 
+            
             <div class="input-group mt-3">
+                <form method="post" class="form-inline justify-content-center"  >
                 <input type='text' id='message-input' placeholder='Type your message...' class='form-control'/>
 
                 <button  name="send" id="send-button" class="btn btn-primary send">
                             <i class='fa fa-paper-plane'></i>
                         </button>
                     <button type="button" onclick="record()" id="speak-button"  class="btn btn-primary send"><i class="fa fa-microphone"></i></button>
-
+                </form>         
             </div>
+            
         </div>
     </div>
 </div>
@@ -369,4 +374,3 @@
 </html> 
 
                         
-
