@@ -1,6 +1,8 @@
 flask
-langchain
+langchain==0.1.0
 openai
-pinecone-client
+pinecone-client==3.0.0rc2
 sentence_transformers
 tiktoken
+langchain-community
+python-dotenv
