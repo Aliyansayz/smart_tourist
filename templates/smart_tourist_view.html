@@ -337,12 +337,13 @@
             <!-- Chat Content -->
             <div class="chat-element" style="height: 500px; overflow-y: auto;">
                 <!-- Sample Messages -->
-            {% for message in messages %} 
-                <div class="message-box sender" style="text-align: right;">
-                        <div class="me">{{ message.sender }}Hi, how are you? </div>
-                    </div>
+            {% for message in messages %}
+            <div class="message-box sender" style="text-align: right;">        
+                <div class="me">{{message.sender}}</div>
+                </div>
+                
                     <div class="message-box bot" style="text-align: left;">
-                        <div class="message-line">{{ message.response }}I'm good, thanks! How about you? </div>
+                        <div class="message-line">{{message.response}}</div>
                     </div>
                   {% endfor %}
             </div>
@@ -352,10 +353,10 @@
             </div>
 
             <!-- Message Input Field --> 
-            <form method="post" class="form-inline justify-content-center"  > 
+            <form method="post"  > 
             <div class="input-group mt-3">
                 
-                <input type='text' id='message-input' placeholder='Type your message...' class='form-control'/>
+                <input type='text' name="message"  id='message-input' placeholder='Type your message...' class='form-control'/>
 
                 <button  name="send" id="send-button" class="btn btn-primary send">
                             <i class='fa fa-paper-plane'></i>
