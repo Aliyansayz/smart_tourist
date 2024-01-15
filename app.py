@@ -196,7 +196,7 @@ def home():
             doc_messages = messages_state["ask_document"]["messages"]
             return redirect(url_for('doc_chat', messages=doc_messages, title=title, description = description ))
 
-    return render_template('smart_tourist_llm.html', messages=messages, title=title, description = description )
+    return render_template('smart_tourist_view.html', messages=messages, title=title, description = description )
 
 
 
@@ -212,23 +212,20 @@ def doc_chat():
         if 'send'  in  request.form:
             unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
             query = request.form.get('message')
-            # if files : 
-            #     docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id)
-            #     docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
-            #     final_doc_list = docs_chunk
+            
             qa_chain = define_qa()
             if len(doc_messages) == 0 : 
                 qa_chain = define_qa()
                 relevant_docs = get_relevant_docs(query, embeddings, unique_id)
-                print(relevant_docs)
+                
             else :
                 relevant_docs = get_relevant_docs(query, embeddings, unique_id)
-            print(relevant_docs)
+            
             
             answer = get_answer(query, qa_chain, relevant_docs)
             message = request.form.get('message')
             # messages.append({'text': message, 'sender': 'user'}) 
-            doc_messages.append({'text': f'Possible answer from document: {answer}' , 'sender': f"{message}" } )
+            doc_messages.append({'response': f'Possible answer from document: {answer}' , 'sender': f"{message}" } )
             messages_state["ask_document"]["messages"] = doc_messages
         elif 'reset' in request.form:
             doc_messages = []
@@ -255,36 +252,7 @@ def doc_chat():
             doc_messages = messages_state["ask_document"]["messages"]
             return redirect(url_for('doc_chat', messages=doc_messages, title=title , description = description ))
         
-    return render_template('smart_tourist_llm.html', messages=doc_messages, title=title, description = description )
+    return render_template('smart_tourist_view.html', messages=doc_messages, title=title, description = description )
 
 
 
-# @app.route('/ask_anything', methods=['GET', 'POST'])
-# def smart_tourist():
-#     global messages
-#     if request.method == 'POST':
-
-#         if 'send'   in  request.form:
-#             user_input = request.form.get('message')
-#             resoponse = get_response(user_input)
-#             # messages.append({'text': message, 'sender': 'user'}) 
-#             messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
-        
-#         elif 'revert' in request.form:
-#             try : messages = messages[:-1]
-#             except: messages = []
-            
-#         elif 'reset'  in request.form:
-#             messages = []
-
-#     return render_template('smart_tourist_llm.html', messages=messages)
-
-
-
-
-# Use a global list for simplicity. In a real application, you'd use a database.
-
-
-
-
-# 
