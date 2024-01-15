@@ -167,10 +167,11 @@ def home():
 
         if 'send'   in  request.form:
             user_input = request.form.get('message')
-            resoponse = get_response(user_input)
+            res  = get_response(user_input)
             # messages.append({'text': message, 'sender': 'user'}) 
-            messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
+            messages.append({'response': f'{res}' , 'sender': f"{user_input}" } )
             messages_state["ask_anything"]["messages"] = messages
+
         elif 'revert' in request.form:
             messages = messages[:-1]
             messages_state["ask_anything"]["messages"] = messages
@@ -212,6 +213,7 @@ def doc_chat():
         if 'send'  in  request.form:
             unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
             query = request.form.get('message')
+            print("input text is :",query)
             
             qa_chain = define_qa()
             if len(doc_messages) == 0 : 
@@ -223,10 +225,13 @@ def doc_chat():
             
             
             answer = get_answer(query, qa_chain, relevant_docs)
-            message = request.form.get('message')
+            # answer = answer.get('output_text')
+             
             # messages.append({'text': message, 'sender': 'user'}) 
-            doc_messages.append({'response': f'Possible answer from document: {answer}' , 'sender': f"{message}" } )
+            doc_messages.append({'response': f'Possible answer from document: {answer}' , 'sender': f"{query}" } )
+        
             messages_state["ask_document"]["messages"] = doc_messages
+        
         elif 'reset' in request.form:
             doc_messages = []
             messages_state["ask_document"]["messages"] = doc_messages
