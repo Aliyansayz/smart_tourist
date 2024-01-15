@@ -1,8 +1,8 @@
-flask
+flask==3.0.0
 langchain==0.1.0
-openai
-pinecone-client==3.0.0.dev5
-sentence_transformers
-tiktoken
-langchain-community
-python-dotenv
+openai==1.7.2
+pinecone-client==2.2.4
+sentence_transformers==2.2.2
+tiktoken==0.5.2
+langchain-community==0.0.12
+python-dotenv==1.0.0
