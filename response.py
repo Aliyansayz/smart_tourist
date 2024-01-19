@@ -1,24 +1,26 @@
 import os
 import openai
+from openai import OpenAI
+
 import pinecone
-from langchain.vectorstores import Pinecone
+from langchain_community.vectorstores import Pinecone
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+from langchain_community.embeddings.openai import OpenAIEmbeddings
 
-from langchain.embeddings.openai import OpenAIEmbeddings
-
-from langchain.llms import OpenAI
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-from langchain.document_loaders import PyPDFLoader
-from langchain.document_loaders import Docx2txtLoader
+from langchain_community.document_loaders import PyPDFLoader
+from pypdf import PdfReader
+
+from langchain_community.document_loaders import Docx2txtLoader
+from langchain_community.document_loaders import TextLoader
 from langchain.document_loaders import DirectoryLoader
 from langchain.chains.question_answering import load_qa_chain
 
 from langchain.schema import Document 
 import pandas as pd
 import requests
-from langchain.llms.openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
 import numpy as np
 import re
@@ -55,17 +57,12 @@ import re
 
 def get_relevant_docs(query, embeddings, unique_id, final_doc_list = None ):
   
-  document_count = 3
+  document_count = 8
+  pinecone_environment = "gcp-starter"
+  pinecone_index_name  = "arabic-bot"
+  pinecone_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
   
-  if final_doc_list:
-      try:
-              push_to_pinecone(pinecoy_api_key, pinecone_environment, pinecone_index_name, embeddings,  final_docs_list) 
-              relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings, unique_id )
-      except:
-              relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings, unique_id )
- 
-  else :
-      relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings, unique_id )
+  relevant_docs = similar_docs(query, document_count ,pinecone_api_key, pinecone_environment, pinecone_index_name, embeddings, unique_id )
   
   return  relevant_docs
    
@@ -78,28 +75,31 @@ def get_relevant_docs(query, embeddings, unique_id, final_doc_list = None ):
 # ____________________________________________
 
 from langchain.chains import ConversationalRetrievalChain
-from langchain.chat_models import ChatOpenAI
+
 # from langchain.memory import ConversationSummaryMemory
 
 
 def define_qa(): 
-       
-    #  model_name = "text-davinci-003"
-     model_name = "gpt-3.5-turbo"
-     # model_name = "gpt-4"
-     llm = OpenAI(model_name=model_name)
-     qa_chain =load_qa_chain(llm, chain_type="stuff")
     
-     return qa_chain 
+    # from langchain.llms import OpenAI 
+    from langchain_community.chat_models import ChatOpenAI
+    #  model_name = "text-davinci-003"
+    model_name = "gpt-3.5-turbo"
+    # model_name = "gpt-4"
+    llm = ChatOpenAI()
+    qa_chain =load_qa_chain(llm, chain_type="map_reduce")
+
+    return qa_chain 
 
 
 
 def get_answer(query, qa_chain, relevant_docs ):
     
     # qa =  load_qa_chain(llm, chain_type="stuff")
-    
-    answer =  qa_chain.run(input_documents=relevant_docs,
-     question=query)
+    # answer =  qa_chain.run(input_documents=relevant_docs, question=query)
+    answer = qa_chain.invoke({'input_documents':relevant_docs, 'question':query})
+    # answer =  qa_chain.invoke(input=relevant_docs, question=query)
+    print(answer)
     
     return answer
 
@@ -140,43 +140,24 @@ def split_docs(documents, chunk_size=1000, chunk_overlap=0):
 
 # QUERY MATCH --> SIMILAR SEARCH --> RELEVANT DOCS --> RELEVANT DOCS INTO SUMMARY 
 
-def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings,unique_id):
+def similar_docs(query,k,pinecone_api_key,pinecone_environment,pinecone_index_name,embeddings,unique_id):
 
     pinecone.init(
-    api_key=pinecone_apikey,
+    api_key=pinecone_api_key,
     environment=pinecone_environment
     )
 
     index_name = pinecone_index_name
 
-    index = pull_from_pinecone(pinecone_apikey,pinecone_environment,index_name,embeddings)
-    similar_docs = index.similarity_search_with_score(query, int(k),{"unique_id":unique_id})
+    index = pull_from_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name,embeddings)
+    print(pinecone_api_key,pinecone_environment, pinecone_index_name )
+    # similar_docs = index.similarity_search_with_score(query, int(k),{"unique_id":unique_id})
+    similar_docs = index.similarity_search(query, int(k) ,{"unique_id":unique_id}  )
     #print(similar_docs)
     return similar_docs
 
 
-def create_docs(user_file_list, unique_id):
-
-  docs = []
-  PDFReader = download_loader("PDFReader")
-
-  for filename in user_file_list:
-
-      filepath = filename
-      ext = filename.split(".")[-1]
-
-      # Use PDFLoader for .pdf files
-      if ext == "pdf":
-          loader = PDFReader()
-          doc = loader.load_data(file=Path(f'./{filename}'))
-          # loader = PyPDFLoader(filepath)
-      else:
-          continue
-      docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
-
-  return docs
-
-def create_docs_web(directory, unique_id, stop_idx= None):
+def create_docs_web(directory, unique_id ):
   
   user_file_list = os.listdir(directory)
   docs = []
@@ -186,22 +167,41 @@ def create_docs_web(directory, unique_id, stop_idx= None):
       ext = filename.split(".")[-1]
       filepath = os.path.join(directory, filename)
 
-      if stop_idx:  
-            if index >= stop_idx : break  
+      # if stop_idx:  
+      #       if index >= stop_idx : break  
 
-      # Use PDFLoader for .pdf files
-      if ext == "pdf":
-          loader = PyPDFLoader(filepath)
+      # Use TextLoader for .txt files
+      if ext == "txt":
+
+          loader = TextLoader(filename)
+          doc = loader.load()
+            # Use PDFLoader for .pdf files
+      elif ext == "pdf":
+          #Extract Information from PDF file
+          def get_pdf_text(filename):
+              text = ""
+              pdf_ = PdfReader(filename)
+              for page in pdf_.pages:
+                  text += page.extract_text()
+              return text
+
+          doc = get_pdf_text(filename)
+          docs.append(Document( page_content= doc , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+
+
+      elif ext == "docx":
+          loader = Docx2txtLoader(filename)
           doc = loader.load()
 
+      elif ext == "md":
+          loader = UnstructuredMarkdownLoader(filename)
+          doc = loader.load()
       # Skip other file types
       else:
           continue
-      docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
-      uploaded.append(filename)
+      if ext != "pdf":
+        docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
 
-  print("Files Uploaded ", uploaded, len(uploaded))
-  print("Files Not Uploaded", user_file_list[stop_idx:], len(user_file_list[stop_idx:]))
   return docs
 
 
@@ -221,16 +221,27 @@ def docs_content(relevant_docs):
 
 #Create embeddings instance
 def create_embeddings_load_data():
-    # embeddings = OpenAIEmbeddings( model_name="ada")
-    embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2") #  384
+    from langchain_openai import OpenAIEmbeddings
+    # embeddings = OpenAIEmbeddings( model_name="ada") 
+    try :
+        embeddings = OpenAIEmbeddings( model="text-embedding-ada-002")
+        print("OpenAI Embedding Used")
+    except: 
+        from langchain_community.embeddings.openai import OpenAIEmbeddings
+        embeddings = OpenAIEmbeddings()
+        print("OpenAI Embedding Used")
+    finally:
+        embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+
+    # embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2") #  384
     return embeddings
 
 
 #Function to push data to Vector Store - Pinecone here
-def push_to_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings,docs):
+def push_to_pinecone(pinecone_api_key,pinecone_environment,pinecone_index_name,embeddings,docs):
 
     pinecone.init(
-    api_key=pinecone_apikey,
+    api_key=pinecone_api_key,
     environment=pinecone_environment
     )
     print("done......2")
@@ -238,10 +249,12 @@ def push_to_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,em
     
 
 def get_response(user_input):
+
+    from openai import OpenAI
     client = OpenAI()
-    completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
+    completion   = client.chat.completions.create(
+        model    = "gpt-3.5-turbo",
+        messages = [
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": f"{user_input}"}
         ]
