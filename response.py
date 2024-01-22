@@ -221,19 +221,19 @@ def docs_content(relevant_docs):
 
 #Create embeddings instance
 def create_embeddings_load_data():
-    from langchain_openai import OpenAIEmbeddings
-    # embeddings = OpenAIEmbeddings( model_name="ada") 
-    try :
-        embeddings = OpenAIEmbeddings( model="text-embedding-ada-002")
-        print("OpenAI Embedding Used")
-    except: 
-        from langchain_community.embeddings.openai import OpenAIEmbeddings
-        embeddings = OpenAIEmbeddings()
-        print("OpenAI Embedding Used")
-    finally:
-        embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
-
-    # embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2") #  384
+    # from langchain_openai import OpenAIEmbeddings
+    # # embeddings = OpenAIEmbeddings( model_name="ada") 
+    # try :
+    #     embeddings = OpenAIEmbeddings( model="text-embedding-ada-002")
+    #     print("OpenAI Embedding Used")
+    # except: 
+    #     from langchain_community.embeddings.openai import OpenAIEmbeddings
+    #     embeddings = OpenAIEmbeddings()
+    #     print("OpenAI Embedding Used")
+    # finally:
+    #     embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+    embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2") #  384
+  
     return embeddings
 
 
